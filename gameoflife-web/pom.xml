@@ -1,11 +1,16 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <artifactId>gameoflife</artifactId>
         <groupId>com.wakaleo.gameoflife</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
     <groupId>com.wakaleo.gameoflife</groupId>
     <artifactId>gameoflife-web</artifactId>
     <packaging>war</packaging>
@@ -24,24 +29,27 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+
         <plugins>
-          <plugin>
-              <groupId>org.eclipse.jetty</groupId>
-              <artifactId>jetty-maven-plugin</artifactId>
-              <version>9.3.0.v20150612</version>
-              <configuration>
-                  <scanIntervalSeconds>10</scanIntervalSeconds>
-                  <httpConnector>
-                      <port>${jetty.port}</port>
-                      <idleTimeout>60000</idleTimeout>
-                  </httpConnector>
-                  <stopKey>foo</stopKey>
-                  <stopPort>${jetty.stop.port}</stopPort>
-              </configuration>
-          </plugin>
+            <!-- Jetty para desarrollo local -->
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.3.0.v20150612</version>
+                <configuration>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <httpConnector>
+                        <port>${jetty.port}</port>
+                        <idleTimeout>60000</idleTimeout>
+                    </httpConnector>
+                    <stopKey>foo</stopKey>
+                    <stopPort>${jetty.stop.port}</stopPort>
+                </configuration>
+            </plugin>
+
+            <!-- QUITAR <version>2.1.1</version>; hereda la 3.4.1 del POM padre -->
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
                 <configuration>
                     <manifest>
                         <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
@@ -55,6 +63,8 @@
                     </archive>
                 </configuration>
             </plugin>
+
+            <!-- Plugin Serenity/Thucydides -->
             <plugin>
                 <groupId>net.serenity-bdd.maven.plugins</groupId>
                 <artifactId>serenity-maven-plugin</artifactId>
@@ -71,8 +81,9 @@
             </plugin>
         </plugins>
     </build>
+
     <profiles>
-        <!-- Deprecated: needs to be migrated to the webtests module. -->
+        <!-- Perfil performance (usa Ant + JMeter) -->
         <profile>
             <id>performance</id>
             <build>
@@ -100,6 +111,7 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>acceptance</id>
             <build>
@@ -115,6 +127,7 @@
             </build>
         </profile>
     </profiles>
+
     <dependencies>
         <dependency>
             <groupId>com.wakaleo.gameoflife</groupId>
@@ -172,6 +185,5 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.6.1</version>
         </dependency>
-
     </dependencies>
 </project>
