@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project 
-    xmlns="http://maven.apache.org/POM/4.0.0" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
                         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+    <!-- ========================================== -->
+    <!--                  POM BASICO               -->
+    <!-- ========================================== -->
 
+    <modelVersion>4.0.0</modelVersion>
     <groupId>com.wakaleo.gameoflife</groupId>
     <artifactId>gameoflife</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -18,12 +21,13 @@
         <build.number>SNAPSHOT</build.number>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Se elimina 'easyb.version' -->
-        <cobertura.version>2.6</cobertura.version>
-
         <!-- A workaround for a bug in PMD -->
         <sourceJdk>1.8</sourceJdk>
         <targetJdk>1.8</targetJdk>
+
+        <!-- Eliminado easyb.version -->
+        <!-- Se mantiene cobertura.version si quieres usar cobertura en algún perfil -->
+        <cobertura.version>2.6</cobertura.version>
 
         <github.account>wakaleo</github.account>
         <thucydides.version>1.8.4</thucydides.version>
@@ -38,20 +42,25 @@
         <url>scm:git:git@github.com:${github.account}/game-of-life.git</url>
     </scm>
 
+    <!-- ========================================== -->
+    <!--          CONFIGURACION DE COMPILACION     -->
+    <!-- ========================================== -->
+
     <build>
         <plugins>
 
-            <!-- Plugin de compilación -->
+            <!-- Maven Compiler Plugin (Java 8) -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <!-- Puedes usar 3.8.1 si lo prefieres -->
                 <version>3.8.1</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 
-            <!-- Plugin Surefire para los tests -->
+            <!-- Maven Surefire Plugin (Tests) -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.11</version>
@@ -92,7 +101,7 @@
                 </executions>
             </plugin>
 
-            <!-- CODE COVERAGE (JaCoCo) -->
+            <!-- Jacoco Plugin (cobertura es opcional en este POM) -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -146,14 +155,14 @@
 
         </plugins>
 
+        <!-- pluginManagement para que gameoflife-web herede la versión -->
         <pluginManagement>
             <plugins>
-                <!-- Actualizamos el maven-war-plugin en pluginManagement 
-                     para que lo hereden los módulos que generen WAR (por ej.: gameoflife-web). -->
+                <!-- Actualizamos a 3.4.1 para evitar error con la 2.1.1 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>2.1.1</version>
+                    <version>3.4.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -167,10 +176,13 @@
         </extensions>
     </build>
 
-    <!-- Se removió la referencia a 'easyb-core' -->
+    <!-- ========================================== -->
+    <!--      DEPENDENCY & MODULE MANAGEMENT       -->
+    <!-- ========================================== -->
+
     <dependencyManagement>
         <dependencies>
-            <!-- Ya no contiene dependencia de easyb -->
+            <!-- Eliminado easyb-core -->
         </dependencies>
     </dependencyManagement>
 
@@ -200,6 +212,10 @@
         <module>gameoflife-core</module>
         <module>gameoflife-web</module>
     </modules>
+
+    <!-- ========================================== -->
+    <!--                PERFILES                    -->
+    <!-- ========================================== -->
 
     <profiles>
         <profile>
@@ -249,6 +265,7 @@
             </activation>
             <build>
                 <plugins>
+                    <!-- Enforcer para Maven >= 3 -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
@@ -270,6 +287,7 @@
                         </executions>
                     </plugin>
 
+                    <!-- Maven Site Plugin para Maven 3.x -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-site-plugin</artifactId>
@@ -352,117 +370,18 @@
             </build>
         </profile>
 
+        <!--
+            Eliminamos el perfil maven2 por completo para evitar
+            que fuerce plugins muy antiguos (ej. maven-war-plugin:2.1.1).
+            Si quieres mantenerlo, actualiza también a maven-war-plugin 3.x
+            dentro de ese perfil.
+        -->
+
+        <!--
         <profile>
             <id>maven2</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-enforcer-plugin</artifactId>
-                        <version>1.0</version>
-                        <executions>
-                            <execution>
-                                <id>enforce-versions</id>
-                                <goals>
-                                    <goal>enforce</goal>
-                                </goals>
-                                <configuration>
-                                    <rules>
-                                        <requireMavenVersion>
-                                            <version>[2.0.9, 2.2.1]</version>
-                                        </requireMavenVersion>
-                                    </rules>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- Aquí se usaba el plugin maven-site-plugin 2.1.1 para maven2 -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <version>2.1.1</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.wakaleo.gameoflife</groupId>
-                                <artifactId>gameoflife-build</artifactId>
-                                <version>${project.version}</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-
-            <reporting>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>cobertura-maven-plugin</artifactId>
-                        <version>${cobertura.version}</version>
-                        <configuration>
-                            <formats>
-                                <format>html</format>
-                                <format>xml</format>
-                            </formats>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-pmd-plugin</artifactId>
-                        <version>2.5</version>
-                        <configuration>
-                            <targetJdk>1.6</targetJdk>
-                            <aggregate>true</aggregate>
-                            <format>xml</format>
-                            <rulesets>
-                                <ruleset>/pmd-rules.xml</ruleset>
-                            </rulesets>
-                            <!-- CPD options -->
-                            <minimumTokens>20</minimumTokens>
-                            <ignoreIdentifiers>true</ignoreIdentifiers>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>2.9.1</version>
-                        <configuration>
-                            <configLocation>gameoflife-build/checkstyle.xml</configLocation>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
-                        <version>2.4.0</version>
-                        <configuration>
-                            <effort>Max</effort>
-                            <xmlOutput>true</xmlOutput>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.7</version>
-                        <configuration>
-                            <source>1.6</source>
-                            <doclet>gr.spinellis.umlgraph.doclet.UmlGraphDoc</doclet>
-                            <docletArtifact>
-                                <groupId>gr.spinellis</groupId>
-                                <artifactId>UmlGraph</artifactId>
-                                <version>4.6</version>
-                            </docletArtifact>
-                            <additionalparam>
-                                -inferrel -inferdep -hide java.* -collpackages
-                                java.util.* -attributes -operations
-                                -enumerations -enumconstants
-                            </additionalparam>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jxr-plugin</artifactId>
-                        <version>2.1</version>
-                    </plugin>
-                </plugins>
-            </reporting>
+            ...
         </profile>
+        -->
     </profiles>
 </project>
