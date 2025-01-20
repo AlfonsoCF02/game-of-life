@@ -6,7 +6,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Se enlaza con el POM padre (gameoflife/pom.xml) -->
+    <!-- Vinculación con el POM padre -->
     <parent>
         <groupId>com.wakaleo.gameoflife</groupId>
         <artifactId>gameoflife</artifactId>
@@ -19,7 +19,7 @@
     <name>gameoflife-web</name>
 
     <properties>
-        <!-- Puertos para Jetty -->
+        <!-- Jetty config para desarrollo local -->
         <jetty.port>9090</jetty.port>
         <jetty.stop.port>9999</jetty.stop.port>
     </properties>
@@ -35,11 +35,12 @@
 
         <plugins>
 
-            <!-- Jetty plugin (versión 9.3.0) con aperturas de módulos para Java 21 -->
+            <!-- Jetty Plugin ACTUALIZADO a 9.4.x (compatible con Java 21) -->
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>11.0.24</version>
+                <!-- Cambia a la versión 9.4.x más reciente que puedas usar -->
+                <version>9.4.51.v20230217</version> 
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <httpConnector>
@@ -48,21 +49,10 @@
                     </httpConnector>
                     <stopKey>foo</stopKey>
                     <stopPort>${jetty.stop.port}</stopPort>
-
-                    <!-- Apertura de módulos para Java 21 (reflexión) -->
-                    <jvmArgs>
-                      --add-opens java.base/java.lang=ALL-UNNAMED
-                      --add-opens java.base/java.io=ALL-UNNAMED
-                      --add-opens java.base/java.util=ALL-UNNAMED
-                      --add-opens java.base/java.net=ALL-UNNAMED
-                      --add-opens java.base/java.security=ALL-UNNAMED
-                      --add-opens java.base/sun.reflect=ALL-UNNAMED
-                      --add-opens java.base/java.lang.reflect=ALL-UNNAMED
-                    </jvmArgs>
                 </configuration>
             </plugin>
 
-            <!-- WAR Plugin (versión heredada del POM padre, por ejemplo 3.3.2) -->
+            <!-- WAR Plugin (versión heredada, por ejemplo 3.3.2 o 3.4.x) -->
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
@@ -79,7 +69,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Serenity plugin (hereda la versión 2.6.0 del POM padre) -->
+            <!-- Serenity plugin (versión heredada, por ejemplo 2.6.0) -->
             <plugin>
                 <groupId>net.serenity-bdd.maven.plugins</groupId>
                 <artifactId>serenity-maven-plugin</artifactId>
@@ -98,7 +88,6 @@
     </build>
 
     <profiles>
-        <!-- Perfil de performance (ejemplo) -->
         <profile>
             <id>performance</id>
             <build>
@@ -127,7 +116,6 @@
             </build>
         </profile>
 
-        <!-- Perfil acceptance: suprime test con Surefire -->
         <profile>
             <id>acceptance</id>
             <build>
@@ -144,16 +132,15 @@
         </profile>
     </profiles>
 
-    <!-- Dependencias propias del módulo web -->
     <dependencies>
-        <!-- Dependencia al módulo core -->
+        <!-- Módulo core -->
         <dependency>
             <groupId>com.wakaleo.gameoflife</groupId>
             <artifactId>gameoflife-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- Librerías Spring 3 (como ejemplo) -->
+        <!-- Spring MVC (ejemplo) -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
@@ -183,7 +170,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Mockito para pruebas -->
+        <!-- Mockito -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -191,7 +178,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Fest-assert y slf4j -->
+        <!-- Fest-assert, slf4j, etc. -->
         <dependency>
             <groupId>org.easytesting</groupId>
             <artifactId>fest-assert</artifactId>
