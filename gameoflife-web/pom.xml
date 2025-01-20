@@ -6,7 +6,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Enlazamos con el POM padre -->
+    <!-- Se enlaza con el POM padre (gameoflife/pom.xml) -->
     <parent>
         <groupId>com.wakaleo.gameoflife</groupId>
         <artifactId>gameoflife</artifactId>
@@ -19,7 +19,7 @@
     <name>gameoflife-web</name>
 
     <properties>
-        <!-- Ejemplo: Jetty para pruebas locales -->
+        <!-- Puertos para Jetty -->
         <jetty.port>9090</jetty.port>
         <jetty.stop.port>9999</jetty.stop.port>
     </properties>
@@ -35,31 +35,30 @@
 
         <plugins>
 
-            <!-- EJEMPLO: Jetty Plugin (no se hereda del parent) -->
+            <!-- Jetty plugin (versión 9.3.0) con aperturas de módulos para Java 21 -->
             <plugin>
-              <groupId>org.eclipse.jetty</groupId>
-              <artifactId>jetty-maven-plugin</artifactId>
-              <version>9.3.0.v20150612</version>
-              <configuration>
-                  <scanIntervalSeconds>10</scanIntervalSeconds>
-                  <httpConnector>
-                      <port>${jetty.port}</port>
-                      <idleTimeout>60000</idleTimeout>
-                  </httpConnector>
-                  <stopKey>foo</stopKey>
-                  <stopPort>${jetty.stop.port}</stopPort>
-            
-                  <!-- Apertura de módulos para Java 21 -->
-                  <jvmArgs>
-                    --add-opens java.base/java.lang=ALL-UNNAMED
-                    --add-opens java.base/java.io=ALL-UNNAMED
-                    --add-opens java.base/java.util=ALL-UNNAMED
-                  </jvmArgs>
-              </configuration>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.3.0.v20150612</version>
+                <configuration>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <httpConnector>
+                        <port>${jetty.port}</port>
+                        <idleTimeout>60000</idleTimeout>
+                    </httpConnector>
+                    <stopKey>foo</stopKey>
+                    <stopPort>${jetty.stop.port}</stopPort>
+
+                    <!-- Apertura de módulos para Java 21 (reflexión) -->
+                    <jvmArgs>
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                        --add-opens java.base/java.io=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                    </jvmArgs>
+                </configuration>
             </plugin>
 
-
-            <!-- WAR Plugin (versión heredada: 3.3.2) -->
+            <!-- WAR Plugin (versión heredada del POM padre, por ejemplo 3.3.2) -->
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
@@ -76,11 +75,10 @@
                 </configuration>
             </plugin>
 
-            <!-- Serenity plugin (versión heredada: 2.6.0) -->
+            <!-- Serenity plugin (hereda la versión 2.6.0 del POM padre) -->
             <plugin>
                 <groupId>net.serenity-bdd.maven.plugins</groupId>
                 <artifactId>serenity-maven-plugin</artifactId>
-                <!-- NO declaramos <version>, lo heredamos de pluginManagement -->
                 <executions>
                     <execution>
                         <id>serenity-reports</id>
@@ -96,7 +94,7 @@
     </build>
 
     <profiles>
-        <!-- Perfil performance, por ejemplo -->
+        <!-- Perfil de performance (ejemplo) -->
         <profile>
             <id>performance</id>
             <build>
@@ -125,6 +123,7 @@
             </build>
         </profile>
 
+        <!-- Perfil acceptance: suprime test con Surefire -->
         <profile>
             <id>acceptance</id>
             <build>
@@ -141,16 +140,16 @@
         </profile>
     </profiles>
 
-    <!-- DEPENDENCIAS especificas del web -->
+    <!-- Dependencias propias del módulo web -->
     <dependencies>
-        <!-- Core -->
+        <!-- Dependencia al módulo core -->
         <dependency>
             <groupId>com.wakaleo.gameoflife</groupId>
             <artifactId>gameoflife-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- Spring MVC (ejemplo) -->
+        <!-- Librerías Spring 3 (como ejemplo) -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
@@ -167,7 +166,7 @@
             <version>3.0.2.RELEASE</version>
         </dependency>
 
-        <!-- JSTL y Servlet -->
+        <!-- JSTL y Servlet API -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
@@ -180,7 +179,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Mockito -->
+        <!-- Mockito para pruebas -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -188,7 +187,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Fest-assert, slf4j, etc. -->
+        <!-- Fest-assert y slf4j -->
         <dependency>
             <groupId>org.easytesting</groupId>
             <artifactId>fest-assert</artifactId>
